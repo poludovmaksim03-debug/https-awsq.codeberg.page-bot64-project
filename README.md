@@ -28,7 +28,7 @@
                 <video id="video" autoplay></video>
                 <button id="captureBtn">Сделать снимок</button>
                 <canvas id="canvas" style="display: none;"></canvas>
-                <div id="scannedText"></div>
+                <div id="scannedText"></div> 
             </div>
         </div>
     </div>
