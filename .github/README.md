@@ -1,36 +1,40 @@
-# This is a basic workflow to help you get started with Actions
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Чат‑бот для проверки ДЗ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Чат‑бот проверки домашнего задания</h1>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="message bot">Привет! Я помогу проверить ваше домашнее задание. Используйте сканер или введите ответ вручную.</div>
+        </div>
 
-name: CI
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Введите ответ или используйте сканер">
+            <button id="sendBtn">Отправить</button> 
+            <button id="scanBtn">🔎 Сканировать</button> 
+        </div>
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+        <!-- Модальное окно сканера -->
+        <div id="scannerModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Сканирование задания</h3>
+                <video id="video" autoplay></video>
+                <button id="captureBtn">Сделать снимок</button>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <div id="scannedText"></div>
+            </div>
+        </div>
+    </div>
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    <script src="script.js"></script>
+</body>
+</html>
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
