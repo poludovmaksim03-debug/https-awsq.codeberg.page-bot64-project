@@ -150,5 +150,9 @@ function captureImage() {
     userInput.value = text;
     sendMessage();
     });
-}
+};
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', init());
+    console.log(typeof Tesseract)
+     
      
