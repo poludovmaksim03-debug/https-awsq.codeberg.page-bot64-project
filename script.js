@@ -148,8 +148,6 @@ function captureImage() {
     
     };
 };
-    // Показываем распознанный текст
-    scannedText.innerHTML = "<strong>Распознанный текст:</strong><br>${text}";
 
     // Автоматически отправляем распознанный текст в чат
     userInput.value = '';
