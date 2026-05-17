@@ -154,7 +154,7 @@ function captureImage() {
     // Автоматически отправляем распознанный текст в чат
     userInput.value = '';
     sendMessage();
-
+ 
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', init());
     console.log(typeof Tesseract)
