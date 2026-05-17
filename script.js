@@ -138,11 +138,16 @@ function captureImage() {
     
 
     // Используем Tesseract.js для распознавания текста
-     Tesseract.recognize("https://tesseract.projectnaptha.com/img/eng_bw.png",
-        canvas,
-        "eng",
-        { logger: info => console.log(info) }
-    ).then(({ data: { text } }) => {
+     async function recognizeText(imageSource) {
+    const worker = await Tesseract.createWorker('rus');
+
+    const { data: { text } } = await worker.recognize(imageSource);
+
+    await worker.template();
+    return text.trim();
+    
+    };
+};
     // Показываем распознанный текст
     scannedText.innerHTML = "<strong>Распознанный текст:</strong><br>${text}";
 
