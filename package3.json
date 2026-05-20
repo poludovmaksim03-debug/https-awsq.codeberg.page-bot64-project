@@ -1,0 +1,13 @@
+{
+  "name": "homework-ai-bot",
+  "version": "1.0.0",
+  "description": "AI чат‑бот для распознавания и решения домашнего задания по всем школьным предметам",
+  "main": "bot2.html",
+  "scripts": {
+    "start": "live-server"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
+
