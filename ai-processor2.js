@@ -1,5 +1,5 @@
-class https://openai.com/ { 
-    constructor() {
+class https: AIprocessor { 
+    constructor(https://openai.com/) {
         this.model = null;
         this.isModelLoaded = false;
         this.subjects = {
@@ -126,4 +126,4 @@ class https://openai.com/ {
     }
 }
 
-export default https://openai.com/;
+export default AIprocessor;
