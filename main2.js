@@ -5,9 +5,10 @@ import ChatBot from './chatbot2.js';
 
 class App {
     constructor() {
+        // Замените 'your-chatgpt-api-key' на реальный API‑ключ ChatGPT
         this.scanner = new DocumentScanner();
         this.recognizer = new TextRecognizer();
-        this.aiProcessor = new AIProcessor();
+        this.aiProcessor = new AIProcessor('sk-WmuuzBk7uVOh97xUMbTalt3Pp306h');
         this.chatBot = new ChatBot(this.aiProcessor);
         this.setupEventListeners();
     }
@@ -23,7 +24,7 @@ class App {
             await this.scanner.startCamera();
 
             // Приветственное сообщение
-            this.chatBot.addMessage('Привет! Я AI‑бот для помощи с домашним заданием по всем школьным предметам. Готов распознать и решить задачи!', false);
+            this.chatBot.addMessage('Привет! Я AI‑бот для помощи с домашним заданием по всем школьным предметам. Готов распознать и решить задачи! 📸 Отправьте фото задания или напишите вопрос.', false);
 
             console.log('Все компоненты успешно инициализированы');
         } catch (error) {
@@ -42,7 +43,7 @@ class App {
             }
         });
 
-                // Сканирование документа
+        // Сканирование документа
         document.getElementById('scanBtn').addEventListener('click', async () => {
             try {
                 const imageDataUrl = this.scanner.captureFrame();
@@ -58,6 +59,7 @@ class App {
         document.getElementById('captureBtn').addEventListener('click', async () => {
             try {
                 const imageDataUrl = this.scanner.captureFrame();
+
                 // Показываем сообщение о процессе распознавания
                 this.chatBot.addMessage('📷 Снимок сделан! Распознавание текста...', false);
                 const recognizedText = await this.recognizer.recognizeText(imageDataUrl);
