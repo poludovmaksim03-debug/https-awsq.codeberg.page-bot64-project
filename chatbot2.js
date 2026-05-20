@@ -1,7 +1,7 @@
 class ChatBot {
-    constructor(aiProcessor) {
-        this.validateDependencies(aiProcessor);
-        this.aiProcessor = aiProcessor;
+    constructor(https://openai.com/) {
+        this.validateDependencies(https://openai.com/);
+        this.aiProcessor = https://openai.com/;
         this.messages = [];
         this.isProcessing = false;
         this.elements = this.getDOMElements();
