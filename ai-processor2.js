@@ -1,4 +1,4 @@
-class https: AIprocessor { 
+class AIprocessor { 
     constructor(https://openai.com/) {
         this.model = null;
         this.isModelLoaded = false;
