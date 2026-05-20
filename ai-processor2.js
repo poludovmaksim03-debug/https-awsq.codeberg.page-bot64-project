@@ -100,7 +100,7 @@ class AIProcessor {
     async generateSolutionWithChatGPT(text, subject) {
         const prompt = `Реши следующее домашнее задание по предмету "${subject}":\n\n${text}\n\nПредоставь подробное пошаговое решение с объяснениями каждого шага. В конце напиши окончательный ответ.`;
 
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch('https://api.air.fail/public/text/chatgpt_5_5/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
