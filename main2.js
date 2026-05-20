@@ -8,7 +8,7 @@ class App {
         this.scanner = new DocumentScanner();
         this.recognizer = new TextRecognizer();
         this.aiProcessor = new AIprocessor();
-        this.chatBot = new ChatBot(this.AIprocessor);
+        this.chatBot = new ChatBot(this.aiProcessor);
         this.setupEventListeners();
     }
 
@@ -16,7 +16,7 @@ class App {
         try {
             // Инициализация всех компонентов
             await this.recognizer.initialize();
-            await this.AIprocessor.loadModel();
+            await this.aiProcessor.loadModel();
             this.chatBot.setupEventListeners();
 
             // Запуск камеры
