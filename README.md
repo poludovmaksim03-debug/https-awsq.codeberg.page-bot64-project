@@ -47,6 +47,7 @@
     </div>
 
     <!-- Подключаем библиотеки -->
+    <script type="module" src="https://api.air.fail/public/text/chatgpt_5_5/completions"
     <script type="module" src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0/dist/tf.min.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
     <script type="module" src="scanner2.js"></script>
