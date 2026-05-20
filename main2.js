@@ -1,6 +1,6 @@
 import DocumentScanner from './scanner2.js';
 import TextRecognizer from './recognizer2.js';
-import AIProcessor from './ai-processor2.js';
+import AIProcessor from './ai-processor2.js'; 
 import ChatBot from './chatbot2.js';
 
 class App {
