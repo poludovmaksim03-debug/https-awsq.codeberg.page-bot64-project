@@ -1,4 +1,4 @@
-class AIprocessor {   
+class AIprocessor {    
     constructor() {
         this.model = null;
         this.isModelLoaded = false;
