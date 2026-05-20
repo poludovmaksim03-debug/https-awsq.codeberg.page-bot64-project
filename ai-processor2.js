@@ -1,4 +1,4 @@
-class AIProcessor {
+class AIProcessor { 
     constructor(apiKey) {
         this.apiKey = apiKey;
         this.baseUrl = 'https://api.openai.com/v1/chat/completions';
