@@ -7,8 +7,8 @@ class App {
     constructor() {
         this.scanner = new DocumentScanner();
         this.recognizer = new TextRecognizer();
-        this.aiProcessor = new https://openai.com/();
-        this.chatBot = new ChatBot(this.https://openai.com/);
+        this.aiProcessor = new AIprocessor();
+        this.chatBot = new ChatBot(this.AIprocessor);
         this.setupEventListeners();
     }
 
@@ -16,7 +16,7 @@ class App {
         try {
             // Инициализация всех компонентов
             await this.recognizer.initialize();
-            await this.https://openai.com/.loadModel();
+            await this.AIprocessor.loadModel();
             this.chatBot.setupEventListeners();
 
             // Запуск камеры
