@@ -1,5 +1,5 @@
 class AIprocessor {   
-    constructor(openai.com) {
+    constructor() {
         this.model = null;
         this.isModelLoaded = false;
         this.subjects = {
