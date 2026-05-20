@@ -89,6 +89,9 @@ class ChatBot {
 
             // Отображаем результат
             this.displayResults(result);
+            } catch (error) {
+            console.error('Ошибка обработки сообщения:', error);
+            this.addMessage('❌ Произошла ошибка при обработке запроса. Попробуйте ещё раз.', false);
         }  finally {
             this.isProcessing = false;
             this.elements.sendBtn.disabled = false;
