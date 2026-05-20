@@ -1,4 +1,4 @@
-class AIProcessor { 
+class https://openai.com/ { 
     constructor() {
         this.model = null;
         this.isModelLoaded = false;
@@ -126,4 +126,4 @@ class AIProcessor {
     }
 }
 
-export default AIProcessor;
+export default https://openai.com/;
