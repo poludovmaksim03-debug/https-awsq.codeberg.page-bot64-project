@@ -7,7 +7,7 @@ class App {
     constructor() {
         this.scanner = new DocumentScanner();
         this.recognizer = new TextRecognizer();
-        this.aiProcessor = new AIprocessor();
+        this.aiProcessor = new AIProcessor();
         this.chatBot = new ChatBot(this.aiProcessor);
         this.setupEventListeners();
     }
