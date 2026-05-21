@@ -63,7 +63,7 @@ async callYandexGPT(prompt) {
     try {
         this.status.textContent = 'Обращение к Yandex GPT...';
 
-        const response = await fetch('https://ya.ru', {
+        const response = await fetch('https://ya.ru/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
