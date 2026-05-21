@@ -1,13 +1,22 @@
 {
-  "name": "homework-ai-bot",
+  "name": "homework-checker-bot",
   "version": "1.0.0",
-  "description": "AI чат‑бот для распознавания и решения домашнего задания по всем школьным предметам",
-  "main": "bot2.html",
+  "description": "Многозадачный чат‑бот для проверки домашнего задания",
+  "main": "server2.js",
   "scripts": {
-    "start": "live-server"
+    "start": "node server2.js",
+    "dev": "nodemon server2.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "live-server": "^1.2.1"
-  }
+    "nodemon": "^3.0.1"
+  },
+  "author": "Your Name",
+  "license": "MIT"
 }
+
 
