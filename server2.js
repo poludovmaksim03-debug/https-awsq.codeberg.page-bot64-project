@@ -7,39 +7,46 @@ app.use(express.json());
 app.use(express.static('.')); // Для обслуживания статических файлов
 
 
-// Получаем API‑ключ из переменных окружения
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+// Получаем API‑ключ и идентификатор каталога из переменных окружения
+const YANDEX_API_KEY = process.env.YANDEX_API_KEY;
+const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 
-if (!OPENAI_API_KEY) {
-  console.error('Ошибка: OPENAI_API_KEY не установлен в переменных окружения');
+
+if (!YANDEX_API_KEY || !YANDEX_FOLDER_ID) {
+  console.error('Ошибка: YANDEX_API_KEY или YANDEX_FOLDER_ID не установлены в переменных окружения');
   process.exit(1);
 }
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/yandex-gpt', async (req, res) => {
   try {
-    const { model, messages, max_tokens } = req.body;
+    const { messages, max_tokens } = req.body;
 
     // Базовая валидация входящих данных
-    if (!model || !messages || !Array.isArray(messages)) {
+    if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Некорректные данные запроса' });
     }
 
-    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model: model || 'gpt-4o',
-      messages: messages,
-      max_tokens: max_tokens || 1500
+    const response = await axios.post('https://llm.api.cloud.yandex.net/foundationModels/v1/completion', {
+      modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt/latest`,
+      completionOptions: {
+        stream: false,
+        temperature: 0.3,
+        maxTokens: max_tokens || 1500
+      },
+      messages: messages
     }, {
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Api-Key ${YANDEX_API_KEY}`,
         'Content-Type': 'application/json'
       }
     });
 
-    res.json(response.data);
+    const aiResponse = response.data.result.alternatives[0].message.text;
+    res.json({ response: aiResponse });
   } catch (error) {
-    console.error('Ошибка API OpenAI:', error.response?.data || error.message);
+    console.error('Ошибка API Yandex GPT:', error.response?.data || error.message);
     res.status(500).json({
-      error: 'Ошибка при обращении к AI‑сервису'
+      error: 'Ошибка при обращении к Yandex GPT'
     });
   }
 });
@@ -56,4 +63,7 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
   console.log('Откройте в браузере: http://localhost:3000');
+  console.log('\nДля работы необходимо установить:');
+  console.log('- YANDEX_API_KEY в .env файле');
+  console.log('- YANDEX_FOLDER_ID в .env файле');
 });
