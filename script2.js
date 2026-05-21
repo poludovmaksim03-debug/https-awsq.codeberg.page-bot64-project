@@ -63,7 +63,7 @@ async callYandexGPT(prompt) {
     try {
         this.status.textContent = 'Обращение к Yandex GPT...';
 
-        const response = await fetch('http://localhost:3000/api/yandex-gpt', {
+        const response = await fetch('https://poludovmaksim03-debug.github.io/https-awsq.codeberg.page-bot64-project//api/yandex-gpt', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
