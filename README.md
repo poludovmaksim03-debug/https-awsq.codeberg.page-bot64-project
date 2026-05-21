@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Чат‑бот для ДЗ</title>
+    <title>Многозадачный чат‑бот для проверки ДЗ</title>
     <link rel="stylesheet" href="style3.css">
 </head>
 <body>
-    <div class="container">
+    <div class="app">
         <header>
-            <h1>AI Чат‑бот для распознавания и решения ДЗ</h1>
-            <button id="fullscreenBtn">Полноэкранный режим</button>
+            <h1>🤖 Многозадачный чат‑бот для проверки домашнего задания</h1>
+            <p>Сканирование → Распознавание → Анализ → Проверка → Объяснение</p>
         </header>
 
-        <div class="main-content">
-            <div class="scanner-section">
-                <h2>Сканирование ДЗ</h2>
-                <video id="video" autoplay muted playsinline></video>
+        <div class="container">
+            <!-- Расширенная камера -->
+            <div class="camera-section">
+                <h2>📸 Расширенная камера</h2>
+                <div class="camera-controls">
+                    <button id="toggleCamera">🔄 Переключить камеру</button>
+            <button id="startAutoScan">🔎 Автосканирование</button>
+            <button id="capture">📷 Сделать снимок</button>
+            <button id="stopAutoScan" style="display: none;">⏹ Остановить сканирование</button>
+                </div>
+                <video id="video" autoplay muted playsinline width="100%"></video>
                 <canvas id="canvas" style="display: none;"></canvas>
-                <div class="controls">
-                    <button id="scanBtn">Сканировать документ</button>
-                    <button id="captureBtn">Сделать снимок</button>
-                </div>
             </div>
 
+            <!-- Распознанный текст -->
+            <div class="text-section">
+                <h2>📝 Распознанный текст</h2>
+                <textarea id="textOutput" readonly placeholder="Здесь появится текст с фото..."></textarea>
+            </div>
+
+            <!-- Чат с AI -->
             <div class="chat-section">
-                <h2>Чат с AI‑ботом</h2>
-                <div id="chatMessages" class="chat-messages"></div>
+                <h2>💬 Чат с AI‑помощником</h2>
+                <div id="chatMessages" class="messages"></div>
                 <div class="input-area">
-                    <input type="text" id="userInput" placeholder="Задайте вопрос по ДЗ...">
-                    <button id="sendBtn">Отправить</button>
+                    <input type="text" id="userInput" placeholder="Задайте вопрос или отправьте текст...">
+            <button id="sendBtn">➤ Отправить</button>
                 </div>
             </div>
 
+            <!-- Результаты проверки -->
             <div class="results-section">
-                <div class="recognition-result">
-                    <h3>Распознанный текст</h3>
-                    <textarea id="recognizedText" readonly></textarea>
-                </div>
-                <div class="ai-solution">
-                    <h3>Решение от AI</h3>
-            <div id="aiSolution" class="solution-content"></div>
-                </div>
+                <h2>🧠 Результаты проверки</h2>
+                <div id="aiResponse" class="response"></div>
+                <div class="status" id="status"></div>
             </div>
         </div>
     </div>
 
-    <!-- Подключаем библиотеки -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0/dist/tf.min.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
-    <script type="module" src="scanner2.js"></script>
-    <script type="module" src="recognizer2.js"></script>
-    <script type="module" src="ai-processor2.js"></script>
-    <script type="module" src="chatbot2.js"></script>
-    <script type="module" src="main2.js"></script>
+    <!-- Библиотеки -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+    <script src="script2.js"></script>
 </body>
 </html>
