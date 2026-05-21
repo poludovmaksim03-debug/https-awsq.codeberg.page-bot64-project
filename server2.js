@@ -8,7 +8,7 @@ app.use(express.static('.')); // Для обслуживания статиче�
 
 
 // Получаем API‑ключ и идентификатор каталога из переменных окружения
-const YANDEX_API_KEY = process.env.YANDEX_API_KEY;
+const YANDEX_API_KEY = process.env.ai-studio-cc8b18;
 const YANDEX_FOLDER_ID = process.env.YANDEX_FOLDER_ID;
 
 
