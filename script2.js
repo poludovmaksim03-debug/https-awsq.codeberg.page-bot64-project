@@ -20,7 +20,7 @@ class HomeworkCheckerBot {
     async initCamera() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: {                facingMode: this.currentCamera
+                video: {facingMode: this.currentCamera
             }
         });
 
@@ -63,7 +63,8 @@ async callYandexGPT(prompt) {
     try {
         this.status.textContent = 'Обращение к Yandex GPT...';
 
-        const response = await fetch('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts', {
+        const response = await fetch('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts', 
+            {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
