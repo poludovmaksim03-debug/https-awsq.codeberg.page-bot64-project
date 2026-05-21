@@ -4,7 +4,7 @@ class HomeworkCheckerBot {
         this.canvas = document.getElementById('canvas');
         this.context = this.canvas.getContext('2d');
         this.textOutput = document.getElementById('textOutput');
-        this.chatMessages = document.getElementById('chatMessages');
+        this.chatMessages = document.getElementById('chatMessages'); 
         this.userInput = document.getElementById('userInput');
         this.aiResponse = document.getElementById('aiResponse');
         this.status = document.getElementById('status');
