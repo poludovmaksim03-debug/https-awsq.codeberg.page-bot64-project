@@ -26,7 +26,7 @@ app.post('/api/yandex-gpt', async (req, res) => {
       return res.status(400).json({ error: 'Некорректные данные запроса' });
     }
 
-    const response = await axios.post('https://ya.ru/', {
+    const response = await axios.post('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts', {
       modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt/latest`,
       completionOptions: {
         stream: false,
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log('Откройте в браузере: https://github.com/poludovmaksim03-debug/https-awsq.codeberg.page-bot64-project');
+  console.log('Откройте в браузере: https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts');
   console.log('\nДля работы необходимо установить:');
   console.log('- YANDEX_API_KEY в .env файле');
   console.log('- YANDEX_FOLDER_ID в .env файле');
