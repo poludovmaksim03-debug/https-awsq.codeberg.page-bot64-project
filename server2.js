@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log('Откройте в браузере: https://ya.ru/');
+  console.log('Откройте в браузере: https://github.com/poludovmaksim03-debug/https-awsq.codeberg.page-bot64-project');
   console.log('\nДля работы необходимо установить:');
   console.log('- YANDEX_API_KEY в .env файле');
   console.log('- YANDEX_FOLDER_ID в .env файле');
