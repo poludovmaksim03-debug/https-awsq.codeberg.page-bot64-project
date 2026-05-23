@@ -73,7 +73,7 @@
 
     <!-- Библиотеки -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
-    <script src="knowledge-base2.js"
+    <script src="knowledge-base2.js"></script>
     <script src="script2.js"></script>
 </body>
 </html>
