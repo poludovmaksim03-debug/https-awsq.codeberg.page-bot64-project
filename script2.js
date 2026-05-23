@@ -63,7 +63,7 @@ async callYandexGPT(prompt) {
     try {
         this.status.textContent = 'Обращение к Yandex GPT...';
 
-        const response = await fetch('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts', 
+        const response = await fetch('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-account/aje2bl8hkmkq8m5rr14a/overview', 
             {
             method: 'POST',
             headers: {
