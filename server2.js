@@ -8,12 +8,12 @@ app.use(express.static('.')); // Для обслуживания статиче�
 
 
 // Получаем API‑ключ и идентификатор каталога из переменных окружения
-const YANDEX_API_KEY = process.env.ai-studio-cc8b18;
-const YANDEX_FOLDER_ID = process.env.aje2ood3iuaglich1ih0;
+const YANDEX_API_KEY = process.env.***…mtYV0I;
 
 
-if (!YANDEX_API_KEY || !YANDEX_FOLDER_ID) {
-  console.error('Ошибка: YANDEX_API_KEY или YANDEX_FOLDER_ID не установлены в переменных окружения');
+
+if (!YANDEX_API_KEY) {
+  console.error('Ошибка: YANDEX_API_KEY не установлен в переменных окружения');
   process.exit(1);
 }
 
@@ -26,12 +26,12 @@ app.post('/api/yandex-gpt', async (req, res) => {
       return res.status(400).json({ error: 'Некорректные данные запроса' });
     }
 
-    const response = await axios.post('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts', {
+    const response = await axios.post('https://ai.api.cloud.yandex.net/v1', {
       modelUri: `gpt://${YANDEX_FOLDER_ID}/yandexgpt/latest`,
       completionOptions: {
         stream: false,
         temperature: 0.3,
-        maxTokens: max_tokens || 1500
+        maxTokens: max_tokens || 6000
       },
       messages: messages
     }, {
@@ -62,8 +62,7 @@ app.use((req, res, next) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log('Откройте в браузере: https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-accounts');
+  console.log('Откройте в браузере: http://localhost3000');
   console.log('\nДля работы необходимо установить:');
   console.log('- YANDEX_API_KEY в .env файле');
-  console.log('- YANDEX_FOLDER_ID в .env файле');
 });
