@@ -63,7 +63,7 @@ async callYandexGPT(prompt) {
     try {
         this.status.textContent = 'Обращение к Yandex GPT...';
 
-        const response = await fetch('https://console.yandex.cloud/folders/b1ghp2t1hbddkurtrt9g/iam/service-account/aje2bl8hkmkq8m5rr14a/overview', 
+        const response = await fetch('https://ai.api.cloud.yandex.net/v1', 
             {
             method: 'POST',
             headers: {
@@ -78,7 +78,7 @@ async callYandexGPT(prompt) {
             },
             { role: 'user', content: prompt }
         ],
-        max_tokens: 1500
+        max_tokens: 6000
     })
 });
 
