@@ -37,6 +37,21 @@
                 <textarea id="textOutput" readonly placeholder="Здесь появится текст с фото..."></textarea>
             </div>
 
+            <!-- Выбор предмета -->
+            <div class="subject-section">
+                <h2>🎒 Выберите предмет</h2>
+                <select id="subjectSelect">
+                    <option value="all">Все предметы</option>
+            <option value="math">Математика</option>
+            <option value="physics">Физика</option>
+            <option value="chemistry">Химия</option>
+            <option value="russian">Русский язык</option>
+            <option value="literature">Литература</option>
+            <option value="history">История</option>
+            <option value="biology">Биология</option>
+                </select>
+            </div>
+
             <!-- Чат с AI -->
             <div class="chat-section">
                 <h2>💬 Чат с AI‑помощником</h2>
@@ -58,6 +73,7 @@
 
     <!-- Библиотеки -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+    <script src="knowledge-base2.js"</script>
     <script src="script2.js"></script>
 </body>
 </html>
