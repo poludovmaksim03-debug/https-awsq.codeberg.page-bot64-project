@@ -1,4 +1,4 @@
-class KnowledgeBase {
+class KnowledgeBase { 
     constructor() {
         this.subjects = {
             math: {
