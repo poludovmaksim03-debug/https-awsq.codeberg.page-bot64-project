@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log('Откройте в браузере: http://localhost3000');
+  console.log('Откройте в браузере: http://localhost:5500');
   console.log('\nДля работы необходимо установить:');
   console.log('- YANDEX_API_KEY в .env файле');
 });
