@@ -70,7 +70,7 @@ async callYandexGPT(prompt) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'yandexgpt',
+                model: 'gpt://b1ghp2t1hbddkurtrt9g/yandexgpt-5-pro/latest',
                 messages: [
                     {
                 role: 'system',
