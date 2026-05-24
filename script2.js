@@ -8,6 +8,7 @@ class HomeworkCheckerBot {
         this.userInput = document.getElementById('userInput');
         this.aiResponse = document.getElementById('aiResponse');
         this.status = document.getElementById('status');
+        
 
         this.autoScanInterval = null;
         this.isAutoScanning = false;
@@ -59,39 +60,44 @@ async recognizeTextFromImage(imageData) {
     }
 }
 
-async callYandexGPT(prompt) {
-    try {
-        this.status.textContent = 'Обращение к Yandex GPT...';
+    async callYandexGPT(prompt) {
+        if (!prompt) {
+            throw new Error('Пустой запрос к Yandex GPT');
+        }
 
-        const response = await fetch('http://localhost:5500', 
-            {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'gpt://b1ghp2t1hbddkurtrt9g/yandexgpt-5-pro/latest',
-                messages: [
-                    {
-                role: 'system',
-                content: 'Ты — умный помощник для проверки домашних заданий по всем школьным предметам. Проверяй решение, находи ошибки и объясняй их. Отвечай на русском языке. Разбивай ответ на логические блоки: "Задание", "Анализ решения", "Ошибки (если есть)", "Правильное решение", "Итог".'
-            },
-            { role: 'user', content: prompt }
-        ],
-        max_tokens: 6000
-    })
-});
+        this.status('Обращение к Yandex GPT...');
+
+        try {
+            const response = await fetch('http://localhost:3000/api/yandex-gpt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: 'system',
+                            content: 'Ты — умный помощник для проверки домашних заданий по всем школьным предметам. Проверяй решение, находи ошибки и объясняй их. Отвечай на русском языке.'
+                },
+                {
+                    role: 'user',
+            content: prompt
+        }
+            ],
+            max_tokens: 1500
+        })
+    });
 
         if (!response.ok) {
             throw new Error(`Ошибка API: ${response.status}`);
         }
 
         const data = await response.json();
-        this.status.textContent = 'Ответ получен от Yandex GPT';
+        this.status.textContent = 'Ответ получен от YandexGPT';
         return data.response;
     } catch (error) {
-        console.error('Ошибка вызова Yandex GPT:', error);
-        this.status.textContent = 'Ошибка получения ответа от Yandex GPT';
+        console.error('Ошибка вызова YandexGPT:', error);
+        this.status.textContent = 'Ошибка получения ответа от YandexGPT';
         throw error;
     }
 }
@@ -100,8 +106,8 @@ async processHomework(text) {
     try {
         const prompt = `Проанализируй следующее домашнее задание и его решение. Если решение есть — проверь его правильность, укажи на ошибки и дай правильный ответ. Если решения нет — реши задание пошагово с объяснениями.\n\nЗадание: ${text}\n\nДай подробный разбор на русском языке согласно структуре: "Задание", "Анализ решения", "Ошибки (если есть)", "Правильное решение", "Итог".`;
         return await this.callYandexGPT(prompt);
-    } catch (error) {
-        console.error('Ошибка обработки задания:', error);
+     } catch (error) {
+    console.error('Ошибка обработки задания:', error);
         throw error;
     }
 }
@@ -136,7 +142,7 @@ startAutoScanning() {
             try {
                 const solution = await this.processHomework(recognizedText);
                 this.aiResponse.textContent = solution;
-                this.addChatMessage(`🧠 Проверка от Yandex GPT:\n${solution}`, false);
+                this.addChatMessage(`🧠 Проверка от YandexGPT:\n${solution}`, false);
             } catch (error) {
                 this.aiResponse.textContent = `❌ Ошибка проверки: ${error.message}`;
             }
@@ -195,7 +201,7 @@ bindEvents() {
                 try {
                     const solution = await this.processHomework(recognizedText);
                     this.aiResponse.textContent = solution;
-                    this.addChatMessage(`🧠 Проверка от Yandex GPT:\n${solution}`, false);
+                    this.addChatMessage(`🧠 Проверка от YandexGPT:\n${solution}`, false);
                 } catch (error) {
                     this.aiResponse.textContent = `❌ Ошибка проверки: ${error.message}`;
                 }
@@ -226,7 +232,7 @@ async sendMessage() {
     try {
         const solution = await this.processHomework(userText);
         this.aiResponse.textContent = solution;
-        this.addChatMessage(`🧠 Ответ Yandex GPT:\n${solution}`, false);
+        this.addChatMessage(`🧠 Ответ YandexGPT:\n${solution}`, false);
     } catch (error) {
         this.aiResponse.textContent = `❌ Ошибка: ${error.message}`;
     }
@@ -234,6 +240,6 @@ async sendMessage() {
 }
 
 // Запуск приложения
-document.addEventListener('DOMContentLoaded', () => 
+document.addEventListener('DOMContentLoaded', () => {
     new HomeworkCheckerBot()
-);
+});
