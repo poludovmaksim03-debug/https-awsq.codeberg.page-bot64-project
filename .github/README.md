@@ -8,7 +8,7 @@
 <body>
     <style>
         h1 {color: yellow}
-        p {color: yellow}
+        p {color: green}
         body {background-image: url("https://sun1-88.userapi.com/s/v1/ig2/HJADTC1kRnyJWwlkqy2e8E1-GXpDKhLR-I-blb0KR8fKIZzUc0wJ0B3nSobydodcg8bP-T04eTflxeZ84We2ebDh.jpg?quality=96&crop=0,0,1000,1000&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720&ava=1>") ; background-repeat: no-repeat; background-size: cover}
     </style>
     <div class="app">
