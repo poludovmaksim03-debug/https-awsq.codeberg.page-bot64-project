@@ -109,8 +109,8 @@ async processHomework(text) {
         return await this.callYandexGPT(prompt);
      } catch (error) {
         this.status('Ошибка');
-    console.error('Ошибка обработки задания:', error);
-        throw error;
+    console.error = 'Ошибка обработки задания:';
+    error;
     }
 }
 
