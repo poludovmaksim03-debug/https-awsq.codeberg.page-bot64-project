@@ -65,7 +65,7 @@ async recognizeTextFromImage(imageData) {
             throw new Error('Пустой запрос к Yandex GPT');
         }
 
-        this.status('Обращение к Yandex GPT...');
+        this.status.textContent = 'Обращение к Yandex GPT...';
 
         try {
             const response = await fetch('http://localhost:5500', {
