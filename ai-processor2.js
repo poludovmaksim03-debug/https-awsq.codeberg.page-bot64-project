@@ -1,6 +1,6 @@
 class AIProcessor { 
     constructor(apiKey) {
-        this.apiKey = apiKey;
+        this.apiKey = apiKey; 
         this.baseUrl = 'https://api.openai.com/v1/chat/completions';
         this.subjects = {
             'Математика': ['sin', 'cos', 'tg', 'ctg', 'x^', 'y=', 'уравнение', 'интеграл', 'производная', 'функция', 'график'], 
