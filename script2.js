@@ -65,7 +65,7 @@ async recognizeTextFromImage(imageData) {
             throw new Error('Пустой запрос к Yandex GPT');
         }
 
-        this.status.textContent = 'Обращение к Yandex GPT...';
+        this.status.textContent('Обращение к Yandex GPT...');
 
         try {
             const response = await fetch('http://localhost:5500', {
@@ -109,8 +109,8 @@ async processHomework(text) {
         return await this.callYandexGPT(prompt);
      } catch (error) {
         this.status('Ошибка');
-    console.error = 'Ошибка обработки задания:';
-    error;
+    console.error('Ошибка обработки задания:', error);
+    throw error;
     }
 }
 
