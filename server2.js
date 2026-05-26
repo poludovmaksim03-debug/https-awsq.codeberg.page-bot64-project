@@ -65,4 +65,5 @@ app.listen(PORT, () => {
   console.log('Откройте в браузере: http://localhost:5500');
   console.log('\nДля работы необходимо установить:');
   console.log('- YANDEX_API_KEY в .env файле');
+  console.log('- YANDEX_FOLDER_ID в .env файле');
 });
