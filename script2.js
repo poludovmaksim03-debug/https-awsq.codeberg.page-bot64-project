@@ -20,9 +20,9 @@ class HomeworkCheckerBot {
         // Состояния
         this.autoScanInterval = null;
         this.isAutoScanning = false;
-        this.currentCamera = 'environment'; // 'environment' = задняя, 'user' = фронтальная
+        this.currentCamera = 'environment';
 
-        // Привязываем контекст
+        // Привязка контекста
         this.handleCapture = this.handleCapture.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.startAutoScanning = this.startAutoScanning.bind(this);
@@ -40,23 +40,16 @@ class HomeworkCheckerBot {
             });
             this.video.srcObject = stream;
 
-            // Ждём, пока видео загрузится
             await new Promise((resolve) => {
-                this.video.onloadedmetadata = () => {
-                    console.log('[Камера] Метаданные загружены');
-                    resolve();
-                };
+                this.video.onloadedmetadata = () => resolve();
             });
 
             await new Promise((resolve) => {
-                this.video.onplay = () => {
-                    console.log('[Камера] Видео начало воспроизводиться');
-                    resolve();
-                };
+                this.video.onplay = () => resolve();
             });
 
             if (!this.video.videoWidth || !this.video.videoHeight) {
-                throw new Error('Камера подключена, но не передаёт размеры');
+                throw new Error('Камера не передаёт размеры');
             }
 
             console.log(`[Камера] Размеры: ${this.video.videoWidth}x${this.video.videoHeight}`);
@@ -64,20 +57,13 @@ class HomeworkCheckerBot {
         } catch (error) {
             console.error('❌ Ошибка камеры:', error);
             this.status.textContent = `⚠️ Ошибка: ${error.message}`;
-            alert('Не удалось включить камеру. Разрешите доступ и перезагрузите.');
+            alert('Не удалось включить камеру. Разрешите доступ.');
         }
     }
 
     captureFrame() {
-        if (!this.video?.srcObject) {
-            console.warn('❌ Нет видеопотока');
-            return null;
-        }
-
-        if (!this.video.videoWidth || !this.video.videoHeight) {
-            console.warn('❌ videoWidth или videoHeight = 0');
-            return null;
-        }
+        if (!this.video?.srcObject) return null;
+        if (!this.video.videoWidth || !this.video.videoHeight) return null;
 
         this.canvas.width = this.video.videoWidth;
         this.canvas.height = this.video.videoHeight;
@@ -109,56 +95,64 @@ class HomeworkCheckerBot {
         }
     }
 
+    // ✅ ОСНОВНОЕ ИСПРАВЛЕНИЕ: улучшенный callYandexGPT с защитой от "Failed to fetch"
     async callYandexGPT(prompt) {
         if (!prompt?.trim()) throw new Error('Пустой запрос');
 
-        this.status.textContent = '📡 Запрос к YandexGPT...';
+        this.status.textContent = '📡 Отправка на анализ...';
 
-        const API_KEY = 'AQVN3URzJQka8xSpp0DxNgbXa38dQmrXH5IrRmdt';
-        const FOLDER_ID = 'b1ghp2t1hbddkurtrt9g';
+        // 🔁 Повторная попытка (на случай временной ошибки сети)
+        let attempts = 0;
+        const maxAttempts = 3;
 
-        try {
-            const response = await fetch('http://localhost:3000/api/yandexgpt', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Api-Key ${API_KEY}`,
-                    'x-folder-id': FOLDER_ID
-                },
-                body: JSON.stringify({
-                    prompt,
-                    subject: this.subjectSelect.value,
-                    modelUri: `gpt://${FOLDER_ID}/yandexgpt/latest`,
-                    messages: [
-                        {
-                            role: 'system',
-                            text: `Ты — помощник по проверке ДЗ. Предмет: ${this.subjectSelect.value}. Объясняй на русском.`
-                        },
-                        { role: 'user', text: prompt }
-                    ],
-                    completionOptions: {
-                        maxTokens: 2048,
-                        temperature: 0.5
+        while (attempts < maxAttempts) {
+            try {
+                const response = await fetch('http://localhost:3000/api/yandexgpt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt,
+                        subject: this.subjectSelect.value
+                    }),
+                    timeout: 10000 // 10 секунд
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+
+                // ✅ Защита от undefined
+                const text = data?.text;
+                if (!text) {
+                    throw new Error('Пустой ответ от сервера');
+                }
+
+                this.status.textContent = '💬 Ответ получен';
+                return text;
+            } catch (error) {
+                attempts++;
+                console.warn(`Попытка ${attempts} не удалась:`, error.message);
+
+                if (attempts >= maxAttempts) {
+                    // 🛑 Все попытки исчерпаны
+                    let userMessage = 'Не удалось подключиться к серверу. ';
+                    
+                    if (error.name === 'TypeError' || error.message.includes('fetch')) {
+                        userMessage += 'Запустите server2.js командой: node server2.js';
+                    } else {
+                        userMessage += error.message;
                     }
-                })
-            });
 
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`HTTP ${response.status}: ${errText}`);
+                    this.status.textContent = `❌ Ошибка: ${userMessage}`;
+                    throw new Error(userMessage);
+                }
+
+                // Пауза между попытками
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
-
-            const data = await response.json();
-            const text = data?.result?.alternatives?.[0]?.message?.text;
-
-            if (!text) throw new Error('Пустой ответ от YandexGPT');
-
-            this.status.textContent = '💬 Ответ получен';
-            return text;
-        } catch (error) {
-            console.error('❌ YandexGPT ошибка:', error);
-            this.status.textContent = `⚠️ Ошибка: ${error.message}`;
-            throw error;
         }
     }
 
@@ -177,9 +171,10 @@ class HomeworkCheckerBot {
 "Правильное решение"
 "Итог"`;
 
-            return await this.callYandexGPT(prompt);
+            const solution = await this.callYandexGPT(prompt);
+            return solution;
         } catch (error) {
-            this.status.textContent = '❌ Ошибка обработки задания';
+            this.status.textContent = `❌ Ошибка: ${error.message}`;
             throw error;
         }
     }
@@ -194,33 +189,26 @@ class HomeworkCheckerBot {
 
     async handleCapture() {
         try {
-            console.log('📸 Попытка сделать снимок...');
-            console.log('srcObject:', this.video.srcObject);
-            console.log('videoWidth:', this.video.videoWidth);
-
             if (!this.video.srcObject) {
-                throw new Error('Камера не включена — перезагрузите страницу');
+                throw new Error('Камера не включена');
             }
 
-            // Ждём, если видео ещё не готово
             if (!this.video.videoWidth || !this.video.videoHeight) {
-                this.status.textContent = '⏳ Камера загружается...';
+                this.status.textContent = '⏳ Ждём загрузки камеры...';
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 if (!this.video.videoWidth || !this.video.videoHeight) {
-                    throw new Error('Камера не готова — подождите или перезагрузите');
+                    throw new Error('Камера не готова — перезагрузите');
                 }
             }
 
             const imageData = this.captureFrame();
-            if (!imageData) {
-                throw new Error('Не удалось получить кадр');
-            }
+            if (!imageData) throw new Error('Не удалось получить кадр');
 
             const recognizedText = await this.recognizeTextFromImage(imageData);
             this.textOutput.value = recognizedText;
             this.addChatMessage(`📝 Распознано: ${recognizedText}`, true);
 
-            this.aiResponse.textContent = '🤖 Анализирую задание...';
+            this.aiResponse.textContent = '🤖 Анализирую...';
             try {
                 const solution = await this.processHomework(recognizedText);
                 this.aiResponse.textContent = solution;
@@ -233,7 +221,7 @@ class HomeworkCheckerBot {
         } catch (error) {
             console.error('❌ Ошибка снимка:', error);
             this.status.textContent = `❌ Ошибка: ${error.message}`;
-            alert('Ошибка: ' + error.message);
+            alert(error.message);
         }
     }
 
@@ -243,11 +231,11 @@ class HomeworkCheckerBot {
         this.isAutoScanning = true;
         this.startAutoScanBtn.disabled = true;
         this.stopAutoScanBtn.style.display = 'inline-block';
-        this.status.textContent = '🔄 Автосканирование запущено (каждые 3 сек)';
+        this.status.textContent = '🔄 Автосканирование запущено';
 
         this.autoScanInterval = setInterval(() => {
-            console.log('⏱ Автосканирование: попытка снимка');
-            this.handleCapture(); // вызывает полную цепочку
+            console.log('⏱ Автосканирование: попытка');
+            this.handleCapture();
         }, 3000);
     }
 
@@ -265,22 +253,17 @@ class HomeworkCheckerBot {
     toggleCamera() {
         this.currentCamera = this.currentCamera === 'environment' ? 'user' : 'environment';
         this.initCamera();
-        this.status.textContent = `🔄 Переключение камеры...`;
+        this.status.textContent = '🔄 Переключение камеры...';
     }
 
     bindEvents() {
-        this.toggleCameraBtn.addEventListener('click', () => {
-            this.toggleCamera();
-        });
-
+        this.toggleCameraBtn.addEventListener('click', () => this.toggleCamera());
         this.startAutoScanBtn.addEventListener('click', this.startAutoScanning);
         this.stopAutoScanBtn.addEventListener('click', this.stopAutoScanning);
         this.captureBtn.addEventListener('click', this.handleCapture);
 
         document.getElementById('sendBtn').addEventListener('click', this.sendMessage);
-        this.userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
-        });
+        this.userInput.addEventListener('keypress', e => e.key === 'Enter' && this.sendMessage());
     }
 
     sendMessage() {
@@ -304,7 +287,6 @@ class HomeworkCheckerBot {
     }
 }
 
-// Запуск при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     new HomeworkCheckerBot();
 });
