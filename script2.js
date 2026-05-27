@@ -107,7 +107,7 @@ class HomeworkCheckerBot {
 
         while (attempts < maxAttempts) {
             try {
-                const response = await fetch('http://localhost:3000/api/yandexgpt', {
+                const response = await fetch('http://localhost:5500/api/yandexgpt', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
