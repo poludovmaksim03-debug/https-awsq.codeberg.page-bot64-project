@@ -76,6 +76,5 @@
     <script src="knowledge-base2.js"></script>
     <script src="script2.js"></script>
     <script src="ai-processor2.js"></script>
-    <script src="server2.js"></script>
 </body>
 </html>
