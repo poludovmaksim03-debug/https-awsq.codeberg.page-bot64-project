@@ -1,5 +1,6 @@
 class HomeworkCheckerBot {
     constructor() {
+        // DOM-элементы
         this.video = document.getElementById('video');
         this.canvas = document.getElementById('canvas');
         this.context = this.canvas.getContext('2d');
@@ -10,14 +11,24 @@ class HomeworkCheckerBot {
         this.status = document.getElementById('status');
         this.subjectSelect = document.getElementById('subjectSelect');
 
+        // Кнопки
+        this.toggleCameraBtn = document.getElementById('toggleCamera');
+        this.startAutoScanBtn = document.getElementById('startAutoScan');
+        this.stopAutoScanBtn = document.getElementById('stopAutoScan');
+        this.captureBtn = document.getElementById('capture');
+
+        // Состояния
         this.autoScanInterval = null;
         this.isAutoScanning = false;
-        this.currentCamera = 'environment';
+        this.currentCamera = 'environment'; // 'environment' = задняя, 'user' = фронтальная
 
         // Привязываем контекст
         this.handleCapture = this.handleCapture.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.startAutoScanning = this.startAutoScanning.bind(this);
+        this.stopAutoScanning = this.stopAutoScanning.bind(this);
 
+        // Инициализация
         this.bindEvents();
         this.initCamera();
     }
@@ -29,60 +40,53 @@ class HomeworkCheckerBot {
             });
             this.video.srcObject = stream;
 
-            // Ждём, пока метаданные видео загрузятся
+            // Ждём, пока видео загрузится
             await new Promise((resolve) => {
                 this.video.onloadedmetadata = () => {
-                    console.log('Метаданные камеры загружены');
+                    console.log('[Камера] Метаданные загружены');
                     resolve();
                 };
             });
 
-            // Ждём, пока видео начнёт воспроизводиться
             await new Promise((resolve) => {
                 this.video.onplay = () => {
-                    console.log('Камера запущена');
+                    console.log('[Камера] Видео начало воспроизводиться');
                     resolve();
                 };
             });
 
-            // Проверяем размеры
             if (!this.video.videoWidth || !this.video.videoHeight) {
                 throw new Error('Камера подключена, но не передаёт размеры');
             }
 
-            console.log('Размеры видео:', this.video.videoWidth, 'x', this.video.videoHeight);
+            console.log(`[Камера] Размеры: ${this.video.videoWidth}x${this.video.videoHeight}`);
             this.status.textContent = '✅ Камера готова к работе';
         } catch (error) {
-            console.error('Ошибка камеры:', error);
-            this.status.textContent = `❌ Ошибка камеры: ${error.message}`;
-            alert('Не удалось включить камеру. Проверьте доступ.');
+            console.error('❌ Ошибка камеры:', error);
+            this.status.textContent = `⚠️ Ошибка: ${error.message}`;
+            alert('Не удалось включить камеру. Разрешите доступ и перезагрузите.');
         }
     }
 
     captureFrame() {
-        // Проверяем, есть ли видеопоток
         if (!this.video?.srcObject) {
-            console.warn('Нет srcObject');
+            console.warn('❌ Нет видеопотока');
             return null;
         }
 
-        // Проверяем, загружено ли видео
         if (!this.video.videoWidth || !this.video.videoHeight) {
-            console.warn('videoWidth или videoHeight = 0');
+            console.warn('❌ videoWidth или videoHeight = 0');
             return null;
         }
 
-        // Устанавливаем размеры canvas
         this.canvas.width = this.video.videoWidth;
         this.canvas.height = this.video.videoHeight;
-
-        // Рисуем кадр
         this.context.drawImage(this.video, 0, 0);
         return this.canvas.toDataURL('image/jpeg');
     }
 
     async recognizeTextFromImage(imageData) {
-        if (!imageData) throw new Error('Нет изображения для распознавания');
+        if (!imageData) throw new Error('Нет изображения');
 
         try {
             this.status.textContent = '📝 Распознавание текста...';
@@ -94,15 +98,13 @@ class HomeworkCheckerBot {
             await worker.terminate();
 
             const text = result.data.text.trim();
-            if (!text) {
-                throw new Error('Распознанный текст пуст');
-            }
+            if (!text) throw new Error('Распознанный текст пуст');
 
             this.status.textContent = '✅ Текст распознан';
             return text;
         } catch (error) {
-            console.error('Ошибка OCR:', error);
-            this.status.textContent = '❌ Ошибка распознавания';
+            console.error('❌ OCR ошибка:', error);
+            this.status.textContent = '⚠️ Не удалось распознать текст';
             throw error;
         }
     }
@@ -154,7 +156,7 @@ class HomeworkCheckerBot {
             this.status.textContent = '💬 Ответ получен';
             return text;
         } catch (error) {
-            console.error('Ошибка YandexGPT:', error);
+            console.error('❌ YandexGPT ошибка:', error);
             this.status.textContent = `⚠️ Ошибка: ${error.message}`;
             throw error;
         }
@@ -192,18 +194,18 @@ class HomeworkCheckerBot {
 
     async handleCapture() {
         try {
-            console.log('Начало снимка...');
-            console.log('video.srcObject:', this.video.srcObject);
-            console.log('video.videoWidth:', this.video.videoWidth);
+            console.log('📸 Попытка сделать снимок...');
+            console.log('srcObject:', this.video.srcObject);
+            console.log('videoWidth:', this.video.videoWidth);
 
-            // Защита: проверяем, что камера включена
             if (!this.video.srcObject) {
-                throw new Error('Камера не включена. Перезагрузите страницу и разрешите доступ.');
+                throw new Error('Камера не включена — перезагрузите страницу');
             }
 
-            // Ждём, пока видео будет готово
+            // Ждём, если видео ещё не готово
             if (!this.video.videoWidth || !this.video.videoHeight) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                this.status.textContent = '⏳ Камера загружается...';
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 if (!this.video.videoWidth || !this.video.videoHeight) {
                     throw new Error('Камера не готова — подождите или перезагрузите');
                 }
@@ -211,7 +213,7 @@ class HomeworkCheckerBot {
 
             const imageData = this.captureFrame();
             if (!imageData) {
-                throw new Error('Не удалось получить кадр с камеры');
+                throw new Error('Не удалось получить кадр');
             }
 
             const recognizedText = await this.recognizeTextFromImage(imageData);
@@ -229,21 +231,56 @@ class HomeworkCheckerBot {
                 this.addChatMessage(errorMsg, false);
             }
         } catch (error) {
-            console.error('Ошибка снимка:', error);
+            console.error('❌ Ошибка снимка:', error);
+            this.status.textContent = `❌ Ошибка: ${error.message}`;
             alert('Ошибка: ' + error.message);
         }
     }
 
+    startAutoScanning() {
+        if (this.isAutoScanning) return;
+
+        this.isAutoScanning = true;
+        this.startAutoScanBtn.disabled = true;
+        this.stopAutoScanBtn.style.display = 'inline-block';
+        this.status.textContent = '🔄 Автосканирование запущено (каждые 3 сек)';
+
+        this.autoScanInterval = setInterval(() => {
+            console.log('⏱ Автосканирование: попытка снимка');
+            this.handleCapture(); // вызывает полную цепочку
+        }, 3000);
+    }
+
+    stopAutoScanning() {
+        if (this.autoScanInterval) {
+            clearInterval(this.autoScanInterval);
+            this.autoScanInterval = null;
+        }
+        this.isAutoScanning = false;
+        this.startAutoScanBtn.disabled = false;
+        this.stopAutoScanBtn.style.display = 'none';
+        this.status.textContent = '⏸ Автосканирование остановлено';
+    }
+
+    toggleCamera() {
+        this.currentCamera = this.currentCamera === 'environment' ? 'user' : 'environment';
+        this.initCamera();
+        this.status.textContent = `🔄 Переключение камеры...`;
+    }
+
     bindEvents() {
-        document.getElementById('toggleCamera').addEventListener('click', () => {
-            this.currentCamera = this.currentCamera === 'environment' ? 'user' : 'environment';
-            this.initCamera();
-            this.status.textContent = `🔄 Камера: ${this.currentCamera === 'environment' ? 'задняя' : 'фронтальная'}`;
+        this.toggleCameraBtn.addEventListener('click', () => {
+            this.toggleCamera();
         });
 
-        document.getElementById('capture').addEventListener('click', this.handleCapture);
+        this.startAutoScanBtn.addEventListener('click', this.startAutoScanning);
+        this.stopAutoScanBtn.addEventListener('click', this.stopAutoScanning);
+        this.captureBtn.addEventListener('click', this.handleCapture);
+
         document.getElementById('sendBtn').addEventListener('click', this.sendMessage);
-        this.userInput.addEventListener('keypress', (e) => e.key === 'Enter' && this.sendMessage());
+        this.userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.sendMessage();
+        });
     }
 
     sendMessage() {
@@ -267,6 +304,7 @@ class HomeworkCheckerBot {
     }
 }
 
+// Запуск при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     new HomeworkCheckerBot();
 });
